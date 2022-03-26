@@ -1,4 +1,5 @@
 # PS2_2022_BaiasuBadleh
-Proiect Sincretic Microcontroller
+Syncretic Project
 Badleh Hady + Baiasu Dan
-ETAPA 1 : Control LED si LED RGB prin interfata seriala
+PHASE 1 : LED and RGBLED control with serial comm
+PHASE 2 : Distance and temp sensor and EEPROM usage introduced 
