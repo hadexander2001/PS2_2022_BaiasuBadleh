@@ -2,13 +2,14 @@
 
 #define samplingRate 10
 
-int contor_message = 0;
+int count_message = 0;
 float temp;
 int address = 0;
 int newaddress;
-//int contor = 0;
+
 long duration;
-int distance ;
+int distance;
+
 const int tempPin = 0;
 const int trigPin = 9;
 const int echoPin = 10;
@@ -19,12 +20,12 @@ void serialHandler()
 
   if (serialString[0] == '1' && serialString[2] == 'A')
   {  
-    PORTB | =  0x20;
+    PORTB |=  0x20;
   }
 
   else if (serialString[0] == '1' && serialString[2] == 'S')
   {  
-    PORTB & =  ~0x20;
+    PORTB &=  ~0x20;
   }
   
   else if (serialString[0] == '2')
@@ -63,14 +64,14 @@ void readDistance()
 
   distance = duration*0.034/2;
 
-  if (distance< = 20 && distance>10)
+  if (distance <= 20 && distance > 10)
   {
     Serial.print("4.<:");
     Serial.print(distance);
     Serial.println(" cm - Risc de inundatie!!>");
     delay(1000);
   }
-  else if (distance< = 10 && distance> = 1)
+  else if (distance <= 10 && distance >= 1)
   {
     Serial.print("4.<:");
     Serial.print(distance);
@@ -90,7 +91,7 @@ void handleRGB(String serialString)
 {
   unsigned int rgbValues[6];
   unsigned int j = 0;
-  for (auto i = 2; i < =  8; i++)
+  for (auto i = 2; i <=  8; i++)
   {
     if (serialString[i]  == 'A') rgbValues[j] = 10;
     else if (serialString[i]  == 'B') rgbValues[j] = 11;
@@ -116,12 +117,12 @@ void handleRGB(String serialString)
   analogWrite(9, green);
 }
 
-void writeEEPROM(int address,String str)
+void writeEEPROM(int address, String str)
 {
   byte len = str.length();
   EEPROM.write(address,len);
 
-  for (int i = 0;i<len;i++)
+  for (int i = 0; i < len; i++)
   {
     EEPROM.write(address+1+i,str[i]);
   }
@@ -141,9 +142,6 @@ String readEEPROM(int address)
   return String(data);
 }
 
-
-
-
 void readMessages(String serialString)
 {
     String message;
@@ -154,29 +152,28 @@ void readMessages(String serialString)
     Serial.print(serialString[i]);
    }
    writeEEPROM(address, message);
-   newaddress = address+1+message.length();
+   newaddress = address + 1 + message.length();
    address = newaddress;
  
 }
 
-void writeMessagess()
+void writeMessages()
 {
   String str;
-  int  eepromOffset[10];
+  int eepromOffset[10];
   int address = 0;
   byte len;
-  int contor = 0;
-  while (contor <= 10)
+  int count = 0;
+  while (count <= 10)
   {
-    Serial.print(contor);
+    Serial.print(count);
     Serial.print(".");
     Serial.println(readEEPROM(address));
     len = readEEPROM(address).length();
     address = address+len+1;
-    contor++;
+    count++;
   }
 }
-
 
 void setup()
 {
@@ -189,10 +186,10 @@ void setup()
 void loop()
 {
   
-  if (contor_message =  = 0 && EEPROM.length()! = 0)
+  if (count_message == 0 && EEPROM.length() != 0)
   {
-    WriteMessagess();
-    contor_message++;
+    writeMessages();
+    count_message++;
   }
   readTemperature();
   readDistance();
