@@ -20,12 +20,12 @@ void serialHandler()
 
   if (serialString[0] == '1' && serialString[2] == 'A')
   {  
-    PORTB |=  0x20;
+    PORTB |= 0x20;
   }
 
   else if (serialString[0] == '1' && serialString[2] == 'S')
   {  
-    PORTB &=  ~0x20;
+    PORTB &= ~0x20;
   }
   
   else if (serialString[0] == '2')
@@ -111,20 +111,21 @@ void handleRGB(String serialString)
    Serial.print(" ");
   byte green = rgbValues[4]*16 + rgbValues[5];
   Serial.print(green);
+  Serial.print("\n");
   
-  analogWrite(11, red);
-  analogWrite(10, blue);
-  analogWrite(9, green);
+  analogWrite(6, red);
+  analogWrite(5, blue);
+  analogWrite(3, green);
 }
 
 void writeEEPROM(int address, String str)
 {
   byte len = str.length();
-  EEPROM.write(address,len);
+  EEPROM.write(address, len);
 
   for (int i = 0; i < len; i++)
   {
-    EEPROM.write(address+1+i,str[i]);
+    EEPROM.write(address + 1 + i,str[i]);
   }
 }
 
@@ -180,7 +181,9 @@ void setup()
   pinMode(trigPin,OUTPUT);
   pinMode(echoPin,INPUT);
   DDRB = 0x22; // Set B pins to output
+  DDRD = 0x68; 
   Serial.begin(9600); // BAUD 9600 bps
+
 }
 
 void loop()
@@ -195,5 +198,6 @@ void loop()
   readDistance();
   serialHandler(); // handles given serial data
   
+
   delay(samplingRate);
 }

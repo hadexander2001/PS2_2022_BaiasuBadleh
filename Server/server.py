@@ -8,15 +8,17 @@ print(ser.name)
 @app.route('/')
 def main_interface():
     text = 'Baiasu&Badleh 2022'
-    temp = '- Temperature is '
-    temp_serial = ser.readline()
+    temp = ' - Temperature is 0'
+    # temp_serial = ser.readlines()
 
     buttonTags = \
         '<p>\
         <button onclick="document.location=\'led_off\'">LED OFF</button> \
-        <button onclick="document.location=\'led_on\'">LED ON</button></p>'
+        <button onclick="document.location=\'led_on\'">LED ON</button> \
+        <button onclick="document.location=\'set_rgb_led\'">RGB LED</button> \
+        </p>'
 
-    return text + temp + temp_serial.decode() + buttonTags
+    return text + temp  + buttonTags #+temp_serial.decode()
     
 @app.route('/led_on')
 def led_on():
@@ -27,3 +29,9 @@ def led_on():
 def led_off():
     ser.write("1 S".encode())
     return "LED OFF"
+
+@app.route('/set_rgb_led')
+def set_rgb_led():
+    
+    ser.write("2 FF0000".encode())
+    return "RGB LED SET TO RED"
