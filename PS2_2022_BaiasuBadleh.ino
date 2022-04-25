@@ -164,7 +164,7 @@ void writeMessages()
   int eepromOffset[10];
   int address = 0;
   byte len;
-  int count = 0;
+  int count = 1;
   while (count <= 10)
   {
     Serial.print(count);
@@ -180,24 +180,22 @@ void setup()
 {
   pinMode(trigPin,OUTPUT);
   pinMode(echoPin,INPUT);
-  DDRB = 0x22; // Set B pins to output
-  DDRD = 0x68; 
+  DDRB = 0x22; // Set B pins 12 and 8 to output
+  DDRD = 0x68; // Set PWM D pins to output
   Serial.begin(9600); // BAUD 9600 bps
 
-}
-
-void loop()
-{
-  
   if (count_message == 0 && EEPROM.length() != 0)
   {
     writeMessages();
     count_message++;
   }
-  readTemperature();
-  readDistance();
+}
+
+void loop()
+{
+  // readTemperature();
+  // readDistance();
   serialHandler(); // handles given serial data
   
-
   delay(samplingRate);
 }
