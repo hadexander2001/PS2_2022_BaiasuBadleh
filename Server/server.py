@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, render_template
+from requests import request
 import serial
 app = Flask(__name__)
 
@@ -6,20 +7,27 @@ ser = serial.Serial('/dev/ttyACM0')
 print(ser.name) 
 
 @app.route('/')
-def main_interface():
-    text = 'Baiasu&Badleh 2022'
-    temp = ' - Temperature is currently unavailable'
-    # temp_serial = ser.readlines()
+def index():
 
-    buttonTags = \
-        '<p>\
-        <button onclick="document.location=\'led_off\'">LED OFF</button> \
-        <button onclick="document.location=\'led_on\'">LED ON</button> \
-        <button onclick="document.location=\'set_rgb_led\'">RGB LED</button> \
-        <button onclick="document.location=\'EEPROMmessages\'">EEPROM Messages</button> \
-        </p>'
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run()
+    
+    # text = 'Baiasu&Badleh 2022'
+    # temp = ' - Temperature is '
+    # temp_serial = ser.readline()
+
+
+    # buttonTags = \
+    #     '<p>\
+    #     <button onclick="document.location=\'led_off\'">LED OFF</button> \
+    #     <button onclick="document.location=\'led_on\'">LED ON</button> \
+    #     <button onclick="document.location=\'set_rgb_led\'">RGB LED</button> \
+    #     <button onclick="document.location=\'EEPROMmessages\'">EEPROM Messages</button> \
+    #     </p>'
         
-    return text + temp  + buttonTags #+temp_serial.decode()
+    # return text + temp + temp_serial.decode()  + buttonTags
     
 @app.route('/led_on')
 def led_on():
@@ -34,8 +42,17 @@ def led_off():
 # Improvable
 @app.route('/set_rgb_led')
 def set_rgb_led():
-    ser.write("2 FF0000".encode())
-    return "RGB LED SET TO RED"
+    input_tags = \
+        '<br><br><label for="RED">Red scale: </label> \
+        <input type="text" id="RED" name="RED"><br><br> \
+        <label for="GREEN">Green scale: </label> \
+        <input type="text" id="GREEN" name="GREEN"><br><br> \
+        <label for="BLUE">Blue scale: </label> \
+        <input type="text" id="BLUE" name="BLUE"><br><br>'
+
+    red = request.input['RED']
+    ser.write(("2 " + red).encode())
+    return "Scale RGB LED\n" + input_tags
 
 @app.route('/EEPROMmessages')
 def readEEPROM():

@@ -44,9 +44,9 @@ void readTemperature()
    // read analog volt from sensor and save to variable temp
   float temperature = ((temp*5)/1024-0.5)*100;
    // convert the analog volt to its temperature equivalent
-   Serial.print("3.<");
+   Serial.print("3.< ");
    Serial.print(temperature); // display temperature value
-   Serial.print("*C>");
+   Serial.print(" ºC >");
    Serial.println();
    delay(1000); // update sensor reading each one second
 }
@@ -113,9 +113,9 @@ void handleRGB(String serialString)
   Serial.print(green);
   Serial.print("\n");
   
-  analogWrite(6, red);
-  analogWrite(5, blue);
-  analogWrite(3, green);
+  analogWrite(6, 255 - red);
+  analogWrite(5, 255 - blue);
+  analogWrite(3, 255 - green);
 }
 
 void writeEEPROM(int address, String str)
@@ -182,18 +182,20 @@ void setup()
   pinMode(echoPin,INPUT);
   DDRB = 0x22; // Set B pins 12 and 8 to output
   DDRD = 0x68; // Set PWM D pins to output
+
+  PORTD |= 0x68;
   Serial.begin(9600); // BAUD 9600 bps
 
-  if (count_message == 0 && EEPROM.length() != 0)
-  {
-    writeMessages();
-    count_message++;
-  }
+  // if (count_message == 0 && EEPROM.length() != 0)
+  // {
+  //   writeMessages();
+  //   count_message++;
+  // }
 }
 
 void loop()
 {
-  // readTemperature();
+  readTemperature();
   // readDistance();
   serialHandler(); // handles given serial data
   
