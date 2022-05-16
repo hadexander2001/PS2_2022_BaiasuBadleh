@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 
-#define samplingRate 10
+#define samplingRate 100
 
 int count_message = 0;
 float temp;
@@ -18,6 +18,8 @@ void serialHandler()
 {
   String serialString = Serial.readString();
 
+  // Serial.print("In serial handler\n");
+  
   if (serialString[0] == '1' && serialString[2] == 'A')
   {  
     PORTB |= 0x20;
@@ -41,12 +43,13 @@ void serialHandler()
 void readTemperature()
 {
   temp = analogRead(tempPin);
+
    // read analog volt from sensor and save to variable temp
-  float temperature = ((temp*5)/1024-0.5)*100;
+  float temperature = ((temp * 5) / 1024 - 0.5) * 100;
    // convert the analog volt to its temperature equivalent
-   Serial.print("3.< ");
+  //  Serial.print("3.< ");
    Serial.print(temperature); // display temperature value
-   Serial.print(" ºC >");
+   Serial.print(" ºC");
    Serial.println();
    delay(1000); // update sensor reading each one second
 }
@@ -89,9 +92,13 @@ void readDistance()
 
 void handleRGB(String serialString)
 {
-  PORTD |= 0x68;
-  unsigned int rgbValues[6];
-  unsigned int j = 0;
+  // PORTD |= 0x68;
+  Serial.flush();
+  // Serial.print("In RGB handler\n");
+  
+  byte rgbValues[6];
+  byte j = 0;
+  
   for (auto i = 2; i <=  8; i++)
   {
     if (serialString[i]  == 'A') rgbValues[j] = 10;
@@ -109,7 +116,7 @@ void handleRGB(String serialString)
   Serial.print(" ");
   byte blue = rgbValues[2]*16 + rgbValues[3];
   Serial.print(blue );
-   Serial.print(" ");
+  Serial.print(" ");
   byte green = rgbValues[4]*16 + rgbValues[5];
   Serial.print(green);
   Serial.print("\n");
@@ -166,6 +173,7 @@ void writeMessages()
   int address = 0;
   byte len;
   int count = 1;
+  
   while (count <= 10)
   {
     Serial.print(count);
@@ -185,6 +193,7 @@ void setup()
   DDRD = 0x68; // Set PWM D pins to output
 
   PORTD |= 0x68;
+  
   Serial.begin(9600); // BAUD 9600 bps
 
   // if (count_message == 0 && EEPROM.length() != 0)

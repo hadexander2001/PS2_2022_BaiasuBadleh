@@ -15,21 +15,21 @@
 		padding: 12px 28px;
 		width: 200px;
 	}
+	
 </style>
 
 <body>
 	<p> PS2 2022 BaiasuBadleh </p>
-<button onclick="document.location='led_off'">LED OFF</button><br><br>
-<button onclick="document.location='led_on'">LED ON</button><br><br>
-<button onclick="document.location='set_rgb_led'">RGB LED</button><br><br>
-<button onclick="document.location='EEPROMmessages'">EEPROM Messages</button><br><br>
-
-<label for="RED">Red scale: </label>
-<input type="text" id="RED" name="RED"><br><br>
-<label for="GREEN">Green scale: </label>
-<input type="text" id="GREEN" name="GREEN"><br><br>
-<label for="BLUE">Blue scale: </label>
-<input type="text" id="BLUE" name="BLUE"><br><br>
+	<div id="tempOutput"></div>
+        <p class="Tempetarure"> Temperature: {{tempOutput}}</p>
+    </div>
+	<div id="distOutput"></div>
+		<p class="Distance"> Distance: {{distOutput}}</p>
+	</div>	
+	<button onclick="document.location='led_off'">LED OFF</button><br><br>
+	<button onclick="document.location='led_on'">LED ON</button><br><br>
+	<button onclick="document.location='set_rgb_led'">RGB LED</button><br><br>
+	<button onclick="document.location='EEPROMmessages'">EEPROM Messages</button><br><br>
 
 </body>
 </html>
