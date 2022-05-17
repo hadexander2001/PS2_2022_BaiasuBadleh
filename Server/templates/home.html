@@ -7,29 +7,58 @@
 </head>
 
 <style>
+
 	p {
+		font-size: 18px;
 		font-weight: bold;
-		font-size: 20px;
+		text-align: center;
+		
 	}
+	p.team {
+		font-size: 30px;
+	}
+
 	button {
+		
+		font-family: "Times New Roman", Times, serif;
+		font-weight: bold;
+		border-width: 3px;
 		padding: 12px 28px;
-		width: 200px;
+		width: 400px;
+	}
+	button.ledoff{
+		background-color: red;
+	}
+	button.ledon{
+		background-color: rgb(0, 255, 42);
+	}
+
+	body {
+		font-family: "Times New Roman", Times, serif;
+		background-image: url("circuitBackgroundImg.jpg");
+		background-size: cover;
+		color: white;
+		position: absolute;
+		right: 550px;
+		top: 50px;
+		
 	}
 	
 </style>
 
 <body>
-	<p> PS2 2022 BaiasuBadleh </p>
+	<p class="team"> PS2 2022 Baiasu & Badleh </p>
 	<div id="tempOutput"></div>
         <p class="Tempetarure"> Temperature: {{tempOutput}}</p>
     </div>
 	<div id="distOutput"></div>
 		<p class="Distance"> Distance: {{distOutput}}</p>
 	</div>	
-	<button onclick="document.location='led_off'">LED OFF</button><br><br>
-	<button onclick="document.location='led_on'">LED ON</button><br><br>
+	<button class="ledoff" onclick="document.location='led_off'">TURN BUILT-IN LED OFF</button><br><br>
+	<button class="ledon" onclick="document.location='led_on'">TURN BUILT-IN LED ON</button><br><br>
 	<button onclick="document.location='set_rgb_led'">RGB LED</button><br><br>
 	<button onclick="document.location='EEPROMmessages'">EEPROM Messages</button><br><br>
+
 
 </body>
 </html>

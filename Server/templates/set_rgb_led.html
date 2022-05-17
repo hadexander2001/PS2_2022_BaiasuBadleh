@@ -9,28 +9,60 @@
 <style>
     p {
 		font-weight: bold;
-		font-size: 20px;
+		font-size: 30px;
+        text-align: center;
 	}
 
     input {
         width: 50px;
         margin-right: 15px;
+        justify-items: right;
     }
+
+    label{
+        font-weight: bold;
+        font-size: 20;
+        text-align: center;
+    }
+    label.red {
+        color: rgb(255, 73, 73);
+    }
+    label.green {
+        color: rgb(37, 253, 37);
+    }
+    label.blue {
+        color: rgb(35, 145, 255);
+    }
+
+    input.btn {
+        width: 150px;
+    }
+
+    body {
+        font-family: "Times New Roman", Times, serif;
+		background-image: url("circuitBackgroundImg.jpg");
+		background-size: cover;
+		color: white;
+		position: absolute;
+		right: 700px;
+		top: 150px;
+    }
+
 </style>
 
 <body>
     <p> SCALE RGB LED</p>
 
     <div class ="form">
-        <form action="" method="post">
-            <label for="RED">Red scale: </label> 
-            <input type="text" placeholder="RED" name="RED" value="{{request.form.RED}}">
-            <label for="GREEN">Green scale: </label>
-            <input type="text" placeholder="GREEN" name="GREEN" value="{{request.form.GREEN}}">
-            <label for="BLUE">Blue scale: </label>
-            <input type="text" placeholder="BLUE" name="BLUE" value="{{request.form.BLUE}}">
+        <table action="" method="post">
+            <label class="red "for="RED">RED: </label> 
+            <input type="text" placeholder="RED" name="RED" value="{{request.form.RED}}"><br><br>
+            <label class="green" for="GREEN">GREEN: </label>
+            <input type="text" placeholder="GREEN" name="GREEN" value="{{request.form.GREEN}}"><br><br>
+            <label class="blue" for="BLUE">BLUE: </label>
+            <input type="text" placeholder="BLUE" name="BLUE" value="{{request.form.BLUE}}"><br><br>
             <input class="btn btn-default" type="submit" value="RGB">
-        </form>
+        </table>
     </div>
 
 </body>
