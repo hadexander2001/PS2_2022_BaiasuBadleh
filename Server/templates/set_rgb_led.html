@@ -21,7 +21,7 @@
 
     label{
         font-weight: bold;
-        font-size: 20;
+        font-size: 20px;
         text-align: center;
     }
     label.red {
@@ -35,7 +35,8 @@
     }
 
     input.btn {
-        width: 150px;
+        font-weight: bold;
+        width: 140px;
     }
 
     body {
@@ -44,8 +45,8 @@
 		background-size: cover;
 		color: white;
 		position: absolute;
-		right: 700px;
-		top: 150px;
+		right: 850px;
+		top: 250px;
     }
 
 </style>
@@ -54,7 +55,7 @@
     <p> SCALE RGB LED</p>
 
     <div class ="form">
-        <table action="" method="post">
+        <form action="" method="post">
             <label class="red "for="RED">RED: </label> 
             <input type="text" placeholder="RED" name="RED" value="{{request.form.RED}}"><br><br>
             <label class="green" for="GREEN">GREEN: </label>
@@ -62,7 +63,7 @@
             <label class="blue" for="BLUE">BLUE: </label>
             <input type="text" placeholder="BLUE" name="BLUE" value="{{request.form.BLUE}}"><br><br>
             <input class="btn btn-default" type="submit" value="RGB">
-        </table>
+        </form>
     </div>
 
 </body>

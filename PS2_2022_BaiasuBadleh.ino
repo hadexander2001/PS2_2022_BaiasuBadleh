@@ -1,9 +1,11 @@
 #include <EEPROM.h>
+#include <LiquidCrystal.h>
 
 #define samplingRate 100
 
 int count_message = 0;
 float temp;
+float temperature;
 int address = 0;
 int newaddress;
 
@@ -14,12 +16,15 @@ const int tempPin = 0;
 const int trigPin = 9;
 const int echoPin = 10;
 
-void serialHandler()
-{
-  String serialString = Serial.readString();
+int start_state = 0;
+int stateButton = 0;
+int change = 0;
 
-  // Serial.print("In serial handler\n");
-  
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+
+String serialHandler(String serialString)
+{
+ 
   if (serialString[0] == '1' && serialString[2] == 'A')
   {  
     PORTB |= 0x20;
@@ -38,6 +43,13 @@ void serialHandler()
   {
     readMessages(serialString);
   }
+  else if (serialString[0] == 'b')
+  {  
+    return "back";
+  }
+
+  return serialString;
+  
 }
 
 void readTemperature()
@@ -45,9 +57,9 @@ void readTemperature()
   temp = analogRead(tempPin);
 
    // read analog volt from sensor and save to variable temp
-  float temperature = ((temp * 5) / 1024 - 0.5) * 100;
+  temperature = ((temp * 5) / 1024 - 0.5) * 100;
    // convert the analog volt to its temperature equivalent
-  //  Serial.print("3.< ");
+
    Serial.print(temperature); // display temperature value
    Serial.print(" ºC");
    Serial.println();
@@ -69,23 +81,20 @@ void readDistance()
 
   if (distance <= 20 && distance > 10)
   {
-    Serial.print("4.<:");
     Serial.print(distance);
-    Serial.println(" cm - Risc de inundatie!!>");
+    Serial.println(" cm - Flooding danger");
     delay(1000);
   }
   else if (distance <= 10 && distance >= 1)
   {
-    Serial.print("4.<:");
     Serial.print(distance);
-    Serial.println(" cm - Risc RIDICAT de inundatie!!>");
+    Serial.println(" cm - High risk of flooding");
     delay(1000);
   }
-  if (distance>20)
+  if (distance > 20)
   {
-    Serial.print("4.<:");
     Serial.print(distance);
-    Serial.println(" cm - Nu exista niciun risc de inundatie.>");
+    Serial.println(" cm - No flooding risk");
     delay(1000);
   }
 }
@@ -185,29 +194,314 @@ void writeMessages()
   }
 }
 
+enum state {
+  EV_OK,
+  EV_CANCEL,
+  EV_NEXT,
+  EV_PREV,
+  EV_NONE,
+  EV_MAX_NUM
+};
+
+enum Menus {
+  MENU_MAIN = 0,
+  MENU_MESAJE,
+  MENU_CONTROL,
+  MENU_TEMPERATURA,
+  MENU_INUNDATII,
+  MENU_MAX_NUM
+ 
+};
+
+
+Menus scroll_menu = MENU_MAIN;
+Menus current_menu =  MENU_MAIN;
+
+void state_machine(enum Menus menu, enum state event);
+state getState(String option);
+
+void print_menu(enum Menus menu);
+
+typedef void (state_machine_handler_t)(void);
+
+void print_menu(enum Menus menu)
+{
+  lcd.clear();
+  switch(menu)
+  {
+    case MENU_MESAJE:
+    lcd.setCursor(0, 1);
+    lcd.print("1. MESAJE");
+    break;
+   
+    case MENU_CONTROL:
+    lcd.setCursor(0, 1);
+    lcd.print("2. CONTROL");
+    break;
+    
+    case MENU_TEMPERATURA:
+    lcd.setCursor(0, 1);
+    lcd.print("3. TEMPERATURA");
+    break;
+    
+    case MENU_INUNDATII:
+    lcd.setCursor(0, 1);
+    lcd.print("4. INUNDATII");
+    break;
+    
+    case MENU_MAIN:
+    default:
+      lcd.setCursor(0,0);
+      lcd.print("PS 2022");
+      lcd.setCursor(0,1);
+      lcd.print("BaiasuBadleh");
+  }
+}     
+
+void enter_menu(void)
+{
+  current_menu = scroll_menu;
+}
+
+void go_home(void)
+{
+  scroll_menu = MENU_MAIN;
+  current_menu = scroll_menu;
+  change = 0;
+}
+
+void message(void)
+{
+  char option;
+  String serialString;
+  int i = 0;
+  
+  switch(scroll_menu)
+  {
+  case 1:
+    
+  lcd.clear();
+  do
+  {
+    option=Serial.read();
+    if(option=='u')
+    {
+      i++;
+    }
+    if(option=='d')
+    {
+      i--;
+    }
+    if(i==4)
+    {
+      i=0;
+    }
+    if(i==-1)
+    {
+      i=3;
+    }
+    
+    switch(i)
+    {
+      case 0:lcd.setCursor(0,0);
+             lcd.print("1.1 Citite  ");
+             if(option=='k')
+                {
+                  writeMessages();
+                }
+      break;
+      
+      case 1:lcd.setCursor(0,0);
+             lcd.print("1.2 Necitite");
+      break;
+      
+      case 2:lcd.setCursor(0,0);
+            lcd.print("1.3 Stergere");
+      break;
+    }
+   
+   }while(option!='b');
+    break;
+
+    case 2:
+    
+     lcd.clear();
+    
+    do{
+      
+    //option=Serial.read();
+    serialString = Serial.readString();
+    
+    if(serialString[0]=='u')
+    {
+      i++;
+    }
+    if(serialString[0]=='d')
+    {
+      i--;
+    }
+    if(i==4)
+    {
+      i=0;
+    }
+    if(i==-1)
+    {
+      i=3;
+    }
+    
+    switch(i)
+    {
+      case 0:lcd.setCursor(0,0);
+             lcd.print("1.1 LED Control");
+             
+              if (serialString[0] == '1' && serialString[2]== 'A')
+              {  
+                PORTB |= 0x20;
+              }
+
+              else if (serialString[0] == '1' && serialString[2]== 'S')
+              {  
+              PORTB &= ~0x20;
+              }
+          
+          
+            break;
+      
+      case 1:lcd.setCursor(0,0);
+             lcd.print("1.2 RGB Led Control");
+             if (serialString[0] == '2')
+             {
+               handleRGB(serialString);
+             }
+      break;
+      
+      case 2:lcd.setCursor(0,0);
+           
+            lcd.print("1.3 Scriere Mesaj");
+            if (serialString[0]=='6')
+            {
+             readMessages(serialString);
+            }
+            break;
+       }
+    
+     }while(serialString[0]!='b');
+     
+    break;
+    
+    case 3:
+    
+     lcd.clear();
+     
+     do
+    {
+      readTemperature();
+      lcd.print(temperature);
+      lcd.print("*C");
+      delay(1000);
+      option=Serial.read();
+      lcd.clear();
+       
+    } while(option != 'b');
+
+    break;
+    
+    
+    case 4:
+  
+  //lcd.clear();
+  //lcd.print("inundatii");
+  do
+  {
+    readDistance();
+    option=Serial.read();
+    
+  }while(option!='b');
+   break;
+  
+    
+  }
+}
+
+
+void go_next(void)
+{
+  scroll_menu = (Menus) ((int)scroll_menu + 1);
+  scroll_menu = (Menus) ((int)scroll_menu % MENU_MAX_NUM);
+}
+
+void go_prev(void)
+{
+  scroll_menu = (Menus) ((int)scroll_menu - 1);
+  scroll_menu = (Menus) ((int)scroll_menu % MENU_MAX_NUM);
+}
+
+
+state_machine_handler_t* sm[MENU_MAX_NUM][EV_MAX_NUM] = 
+{ //events: OK , CANCEL , NEXT, PREV
+  {enter_menu, go_home, go_next, go_prev}, // MENU_MAIN
+  {message,go_home,go_next,go_prev}, //MESAJE
+  {message,go_home,go_next,go_prev}, //CONTROL
+  {message,go_home,go_next,go_prev}, //TEMPERATURA
+  {message,go_home,go_next,go_prev}, //INUNDATII
+};
+  
+void state_machine(enum Menus menu, enum state event)
+{
+  sm[menu][event]();
+}
+
+state getState(String option)
+{
+  
+  enum state ret_val = EV_NONE;
+  if (option[0] == 'k')
+  {
+    ret_val = EV_OK;
+  }
+   if (option[0] == 'b')
+  {
+    ret_val = EV_CANCEL;
+  }
+   if (option[0] == 'u')
+  {
+    ret_val = EV_NEXT;
+  }
+   if (option[0] == 'd')
+  {
+    ret_val = EV_PREV;
+  }
+  return ret_val;
+}
+
 void setup()
 {
-  // pinMode(trigPin,OUTPUT);
-  // pinMode(echoPin,INPUT);
-  DDRB = 0x2A; // Set B pins 12 and 8 to output
-  // DDRD = 0x68; // Set PWM D pins to output
+  pinMode(trigPin,OUTPUT);
+  pinMode(echoPin,INPUT);
+  DDRB = 0x2A; // Set B pins 12 11 9 to output
 
   PORTB |= 0x08;
   
   Serial.begin(9600); // BAUD 9600 bps
+  lcd.begin(16,2);
 
-  // if (count_message == 0 && EEPROM.length() != 0)
-  // {
-  //   writeMessages();
-  //   count_message++;
-  // }
 }
 
 void loop()
 {
-  readTemperature();
-  // readDistance();
-  serialHandler(); // handles given serial data
+  String serialString = Serial.readString();
+  
+  // readTemperature();
+  readDistance();
+  serialHandler(serialString); // handles given serial data
+
+  
+  volatile state event = getState(serialString);
+  if (event != EV_NONE)
+  {
+      state_machine(current_menu, event);
+  }
+  print_menu(scroll_menu);
   
   delay(samplingRate);
 }

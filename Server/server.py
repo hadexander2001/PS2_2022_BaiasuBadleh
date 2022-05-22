@@ -20,8 +20,8 @@ print(ser.name)
 @app.route('/')
 def main_interface():
 
-    tempOutput = ser.readline()
-    distOutput = 10
+    
+    distOutput = ser.readline()
 
     # if distOutput <= 10:
     #     msg = Message(
@@ -34,8 +34,7 @@ def main_interface():
 
     return render_template(
         'home.html', 
-        tempOutput = tempOutput.decode(),
-        distOutput = distOutput)
+        distOutput = distOutput.decode())
     
 @app.route('/led_on')
 def led_on():
