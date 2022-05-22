@@ -8,13 +8,13 @@ app = Flask(__name__)
 ser = serial.Serial('/dev/ttyACM0')
 print(ser.name) 
 
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'hadexander2001@gmail.com'
-app.config['MAIL_PASSWORD'] = '' # generate password
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
+# app.config['MAIL_SERVER']='smtp.gmail.com'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = 'hadexander2001@gmail.com'
+# app.config['MAIL_PASSWORD'] = '' # generate password
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+# mail = Mail(app)
 
 
 @app.route('/')
@@ -23,14 +23,14 @@ def main_interface():
     tempOutput = ser.readline()
     distOutput = 10
 
-    if distOutput <= 10:
-        msg = Message(
-            'Flooding danger!',
-            sender='hadexander2001@gmail.com',
-            recipients=['hadexander2001@gmail.com'])
+    # if distOutput <= 10:
+    #     msg = Message(
+    #         'Flooding danger!',
+    #         sender='hadexander2001@gmail.com',
+    #         recipients=['hadexander2001@gmail.com'])
 
-        msg.body = "Your room is about to get flooded!"
-        mail.send(msg)
+    #     msg.body = "Your room is about to get flooded!"
+    #     mail.send(msg)
 
     return render_template(
         'home.html', 
@@ -40,12 +40,18 @@ def main_interface():
 @app.route('/led_on')
 def led_on():
     ser.write("1 A".encode())
-    return "LED ON"
+    return "LED ON" + \
+        "<style> \
+            body {background-color: rgb(37, 253, 37)} \
+        <style>"
 
 @app.route('/led_off')
 def led_off():
     ser.write("1 S".encode())
-    return "LED OFF"
+    return "LED OFF" + \
+        "<style> \
+            body {background-color: red} \
+        <style>"
 
 @app.route('/set_rgb_led', methods=['GET'])
 def RGBScalingInterface():

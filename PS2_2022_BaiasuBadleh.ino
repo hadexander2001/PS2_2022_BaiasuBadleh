@@ -112,18 +112,18 @@ void handleRGB(String serialString)
   }
   
   byte red = rgbValues[0]*16 + rgbValues[1];
-  Serial.print(red);
-  Serial.print(" ");
-  byte blue = rgbValues[2]*16 + rgbValues[3];
-  Serial.print(blue );
-  Serial.print(" ");
-  byte green = rgbValues[4]*16 + rgbValues[5];
-  Serial.print(green);
-  Serial.print("\n");
+  // Serial.print(red);
+  // Serial.print(" ");
+  // byte blue = rgbValues[2]*16 + rgbValues[3];
+  // Serial.print(blue );
+  // Serial.print(" ");
+  // byte green = rgbValues[4]*16 + rgbValues[5];
+  // Serial.print(green);
+  // Serial.print("\n");
   
-  analogWrite(6, 255 - red);
-  analogWrite(5, 255 - blue);
-  analogWrite(3, 255 - green);
+  analogWrite(11, 255 - red);
+  // analogWrite(5, 255 - blue);
+  // analogWrite(3, 255 - green);
 }
 
 void writeEEPROM(int address, String str)
@@ -187,12 +187,12 @@ void writeMessages()
 
 void setup()
 {
-  pinMode(trigPin,OUTPUT);
-  pinMode(echoPin,INPUT);
-  DDRB = 0x22; // Set B pins 12 and 8 to output
-  DDRD = 0x68; // Set PWM D pins to output
+  // pinMode(trigPin,OUTPUT);
+  // pinMode(echoPin,INPUT);
+  DDRB = 0x2A; // Set B pins 12 and 8 to output
+  // DDRD = 0x68; // Set PWM D pins to output
 
-  PORTD |= 0x68;
+  PORTB |= 0x08;
   
   Serial.begin(9600); // BAUD 9600 bps
 
