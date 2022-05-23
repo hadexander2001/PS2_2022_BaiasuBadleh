@@ -22,8 +22,9 @@ def main_interface():
 
     
     distOutput = ser.readline()
-
-    # if distOutput <= 10:
+    # distOutputAdapted = int(distOutput.decode())
+    # print(distOutputAdapted)
+    # if distOutputAdapted <= 10:
     #     msg = Message(
     #         'Flooding danger!',
     #         sender='hadexander2001@gmail.com',

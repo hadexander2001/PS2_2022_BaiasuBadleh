@@ -82,19 +82,22 @@ void readDistance()
   if (distance <= 20 && distance > 10)
   {
     Serial.print(distance);
-    Serial.println(" cm - Flooding danger");
+    Serial.print("\n");
+    // Serial.println(" cm - Flooding danger");
     delay(1000);
   }
   else if (distance <= 10 && distance >= 1)
   {
     Serial.print(distance);
-    Serial.println(" cm - High risk of flooding");
+    Serial.print("\n");
+    // Serial.println(" cm - High risk of flooding");
     delay(1000);
   }
   if (distance > 20)
   {
     Serial.print(distance);
-    Serial.println(" cm - No flooding risk");
+    Serial.print("\n");
+    // Serial.println(" cm - No flooding risk");
     delay(1000);
   }
 }
